@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Eurostile';
+    src: url('/fonts/Eurostile.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Swiss721';
+    src: url('/fonts/Swiss721-Light.otf') format('opentype');
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'Swiss721';
+    src: url('/fonts/Swiss721-Medium.otf') format('opentype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Swiss721';
+    src: url('/fonts/Swiss721-Bold.otf') format('opentype');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Swiss721';
+    src: url('/fonts/Swiss721-Black.otf') format('opentype');
+    font-weight: 900;
+}
+
+.task-list-modal {
+    margin: 0 auto;
+    box-shadow: rgba(0,0,0,.5) 0px 4px 15px 5px;
+
+}
+
+body {
+    /* background: #D53148; */
+    background: #000000;
+    color: white;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 1023px) {
+    body {
+        background-image: url('/images/mobile-bg.jpg');
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    body {
+        background-image: url('/images/desktop-bg.jpg');
+    }
+}
+
+.app-content {
+    height: 100vh;
+    /* background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 61.46%, rgba(255, 255, 255, 0.25) 80.1%, rgba(255, 255, 255, 0.25) 86.98%, rgba(255, 255, 255, 0.00) 100%) !important; */
+}
+
+.unavailable-blur {
+    filter: blur(5px);
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+
+.mapboxgl-ctrl-attrib-inner {
+    display: none;
+}
+
+.map-container {
+    width: 325px;
+    height: 325px;
+}
+
+.mapboxgl-canvas {
+    width: 325px !important;
+    height: 325px !important;
+}
+
+.question-wrapper {
+    flex: 0 0 100%;
+}
+
+input[type="radio"] {
+    padding: 2px;
+    border: 2px solid white !important;
+}
+
+input[type="radio"]:checked {
+
+}
+
+input[type="radio"] {
+    position: absolute;
+}
+
+input[type="radio"] + label {
+    width: 100%;
+    display: block;
+}
+input[type="radio"]:checked + label {
+    background: #ffffff;
+    color: #000000;
+    width: 100%;
+}
+
+.count-region {
+    opacity: 1;
+    mix-blend-mode: screen;
+}
+
+.count-region.zero {
+    background: rgb(255, 0, 0);
+    border: 2px solid black;
+    opacity: 0;
+}
+
+.count-region.one {
+    background: rgb(0, 255, 0);
+    border: 2px solid black;
+    opacity: 0;
+}
+
+.count-region.two {
+    background: rgb(0, 0, 255);
+    border: 2px solid black;
+    opacity: 0;
+}

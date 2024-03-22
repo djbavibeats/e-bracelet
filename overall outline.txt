@@ -1,0 +1,99 @@
+1. Entry point to the platform will be:
+    ex. bracelet.chaseatlantic.com
+    staging: 
+2. Server url will be:
+3. AR Platform url will be:
+    ex. ar.chaseatlantic.com
+    staging: 
+    Note: The AR experience should live on a separate domain so that we can keep the overall campaign alive for longer just the AR portion.
+        The AR app will be hosted on 8th Wall and will only be accessible for a limited time.
+
+1. Fans will enter the experience by going to {{ ENTRY POINT URL }}. Once there, they will log in using Spotify.
+2. Once logged in, fans will see their bracelet, along with the number of missions they have already completed.
+3. Below the bracelet there will be a button to view available missions, clicking this will open up a missions modal.
+
+MISSIONS
+At launch the following missions will be available to users:
+    1. Follow 
+        - Launch Date: May 13th
+        - Status: DONE, needs single to save (ideally this will already be released)
+        - This goal for this mission is to follow the band on Spotify, and save a recent single.
+        - These functions will be done within the web app, and have already been implemented.
+    2. Find
+        - Launch Date: May 13th
+        - Status: IN DEVELOPMENT
+        - This mission's goal is to complete the AR scavenger hunt, which can be done one of two ways:
+            a. Physically going to one of the digital drop points, activating the AR experience, interacting with the 3D object, and collecting a charm.
+            b. Downloading and scanning a graphic that will serve as an AR trigger, interacting with the 3D object, and collecting a charm.
+        - Both of these tasks will grant a different charm.
+        - Click the "Start Mission" button will kick fans out to the AR domain.
+        - To Do:
+            - Design map
+            - Design popup
+            - 
+
+The following missions will be completed, but locked to users to encourage them to keep checking back:
+    3. Create 
+        - Launch Date: TBA
+        - Status: DONE, needs copy and design assets
+        - The goal of this mission is to complete a personality quiz that will tell you which of the band members you are most similar to. 
+        - Completion of the quiz will also create a personalized Spotify playlist for you.
+        - There are 3 possible results for this quiz, each will grant a different charm. Each user will only be able to earn one charm.
+        - To keep asset creation simple, we only need one charm shape. We can color the charms differently based on the user's outcome.
+    4. Watch
+        - Launch Date: TBA
+        - Status: DONE, needs copy and video
+        - The goal of this mission is to watch a Chase Atlantic YouTube video within the app, upon finishing the video, a charm will be granted.
+
+
+OTHER FUNCTIONALITY
+1. Share 
+    - Status: DONE, needs design assets
+    - Users will be able to share a digital "trading card" with their bracelet printed on it by clicking on the camera icon that appears in the bracelet hub.
+2. 3D Bracelet
+    - 
+
+
++ What is the user flow for how a fan gets to the 8th wall AR Map...
+    - Users flow will include the fan logging in through the bracelet homepage, and then clicking on the "Start Mission" button for the "Find" mission
+
++ When you click the map icon, it opens the list of drop locations...
+    - We will include a map in this popup that shows icons for each drop location.
+
++ Fans might get confused by the “scan the trigger” button...
+    - We have added a more thorough instructions modal, see video walkthrough for reference. All this copy can be updated.
+
+March 25th 
+    - Finalize list of missions that will be available on platform launch, we can do this on our biweekly catchup call.
+    - For reference here are the missions we have currently been working on and the status of their functionality:
+        - FOLLOW - Follow Chase Atlantic and save a TBD single (COMPLETE).
+        - FIND - AR scavenger hunt / target based AR (IN DEVELOPMENT).
+        - CREATE - Complete a personality test to find out which member of Chase Atlantic you are most like and have a playlist generated for you based on your results (COMPLETE, NEEDS COPY).
+        - SYNC - Stream a TBD Chase Atlantic single with your friend at the same time (IN DEVELOPMENT).
+        - WATCH - Watch a TBD Chase Atlantic YouTube video (COMPLETE).
+March 29th 
+    - Spotify FOLLOW Mission functionality completed with placeholder 3D object appearing on bracelet upon completion.
+    - YouTube WATCH Mission functionality completed with placeholder 3D object appearing on bracelet upon completion.
+April 5th
+    - FIND Mission functionality completed (location and target based AR) with placeholder 3D objects appearing on bracelet upon completion.
+    - We will create the AR scenes / targets using placeholder assets. At this point we will know what 2D & 3D assets will need to be created for our AR scene.
+April 12th
+    - Spotify CREATE Mission and Spotify SYNC Mission functionality completed. 
+    - At this point we should have all Spotify functionality in place so we can start the process of getting our API extension approved.
+April 19th
+    - All missions that we will be going live should be finalized and ready to begin more intensive testing. 
+    - We will set up a Dropbox Paper Doc that can be used to log any notes or issues with the platform. 
+    - Begin implementing designs based on album branding.
+April 26th
+    - First look at platform with new design elements implemented.
+May 3rd
+    - Finalize design (this will require timely deliverly of first look notes)
+May 6th
+    - Make sure domains are secure and any necessary hosting plans (primarily 8th Wall) are purchased.
+    - Finalize go-live plan.
+    - This is the Monday before proposed launch and will sync up with our biweekly calls.
+May 10th
+    - Have everything ready to go behind password protected domains.
+May 13th
+    - Launch!
+

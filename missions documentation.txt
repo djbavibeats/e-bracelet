@@ -1,0 +1,38 @@
+name: STRING ex. "follow"
+- one word and all lowercase, this must match the parameter in the switch fucntion in TaskList.jsx
+available: BOOLEAN 
+- whether or not it is available
+description: STRING ex. "follow the band and save a song to unlock a charm!"
+- finishers: ARRAY
+
+{
+    "name": "follow",
+    "available": false,
+    "description": "Follow Chase Atlantic on Spotify and Save 'RECENT SINGLE NAME'",
+    "finishers": []
+}
+
+{
+    "name": "create",
+    "available": false,
+    "description": "Take a quiz and have a custom playlist generated for you!",
+    "finishers": []
+}
+
+{
+    "name": "find",
+    "available": false,
+    "description": "Find the nearest digital drop point or scan a target image to activate an AR experience.",
+    "finishers": []
+}
+
+{
+    "name": "watch",
+    "available" false,
+    "description": "Watch the latest Chase Atlantic video!",
+    "finishers": []
+}
+
+1. Create a mission in Postman using the above JSON template
+2. Mission will show up as locked
+3. Set the mission as available in database

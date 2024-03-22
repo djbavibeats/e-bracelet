@@ -1,0 +1,29 @@
+Fans will complete a variety of tasks to collect charms for their e-bracelet. 
+Spotify related tasks will include following the band on Spotify, taking a short quiz to generate a Spotify playlist that will be saved to their account, and syncing playback of new songs with a friend.
+
+View your email 
+- Store email's related to Spotify users so that we can notify them about upcoming mission releases on the platform.
+
+View your Spotify subscription, account country, and explicit content filter settings 
+- Determine whether we should display features to a user that require a Spotify Premium subscription. The main reason they would need one is in order to stream music from Spotify within our application.
+
+View your name, username, profile picture, Spotify followers, and public playlists
+- We will use their Spotify display name as their display name on the bracelet platform.
+
+View the content you're playing and Spotify Conect devices
+- We will determine whether a user is streaming an upcoming Chase Atlantic single in sync with their friend.
+
+View what you've saved in Your Library
+- We will determine whether a user has saved upcoming Chase Atlantic releases.
+
+View who you follow
+- We will determine whether a user is following Chase Atlantic on Spotify.
+
+Control Spotify on your devices
+- We will allow a user to stream a Chase Atlantic release within our web app.
+
+Add and remove items in Your Library
+- We will save Chase Atlantic songs to a users library and create a playlist for them based on the results of a personality quiz they take within our web app.
+
+Manage who you follow
+- We will follow Chase Atlantic for users.
