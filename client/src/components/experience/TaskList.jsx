@@ -42,8 +42,6 @@ const FindModal = ({ user, toggleFindModal }) => {
     const openARExperience = () => {
         var url_safe_username = encodeURIComponent(user._id)
         var url = "https://justinbavier.staging.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
-        console.log(url)
-        console.log('sending user to AR', user)
         window.open(url, "_blank")
     }
 
