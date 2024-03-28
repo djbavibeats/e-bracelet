@@ -1,17 +1,31 @@
 import { useRef, useState, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, useGLTF, Html } from '@react-three/drei'
+import { OrbitControls, useGLTF, Html, Backdrop, Stage } from '@react-three/drei'
 import * as THREE from 'three'
+import { RigidBody, Physics } from '@react-three/rapier'
+import { useControls } from 'leva'
 
 export default function FriendshipBracelet(props) {
     const [ materialColor, setMaterialColor ] = useState('blue')
   const { nodes, materials } = useGLTF("./models/temp-bracelet.gltf");
     const bracelet = useRef()
+    const charm = useRef()
+    const braceletPhysics = useRef()
     const { gl } = useThree()
-    const sharePanel = useRef()
 
+    useFrame((state) => {
+
+        const time = state.clock.getElapsedTime()
+        if (time > 2) {
+            const eulerRotation = new THREE.Euler(0, (time - 2) * 0.5, 0)
+            const quaternionRotation = new THREE.Quaternion()
+            quaternionRotation.setFromEuler(eulerRotation)
+            bracelet.current.setNextKinematicRotation(quaternionRotation)
+        }
+    })
     useFrame(() => {
-        bracelet.current.rotation.y += 0.01
+        // bracelet.current.rotation.z += 0.01
+        // braceletRotation.y += 0.01
     })
 
     useEffect(() => {
@@ -26,6 +40,9 @@ export default function FriendshipBracelet(props) {
         shareCanvas()
     }
 
+    /**
+     * Share Functions
+     */
     function mergeImageURIs(images) {
         return new Promise( (resolve, reject) => {
             var canvas = document.createElement('canvas')
@@ -128,32 +145,69 @@ export default function FriendshipBracelet(props) {
             console.log(err.name, err.message)
         }
     }
+    // End Share Functions
 
+    const { braceletPosition, braceletScale, braceletRotation } = useControls('Bracelet', {
+        braceletPosition:
+        {
+            value: { x: 0, y: 0, z: 0.5 },
+            step: 0.01
+        },
+        braceletScale:
+        {
+            value: 0.15,
+            step: 0.01
+        },
+        braceletRotation:
+        {
+            value: { x: 1.9, y: 0, z: 0 },
+            step: 0.1
+        }
+    })
 
+    const { charmPosition, charmScale, charmRotation } = useControls('Charm', {
+        charmPosition: {
+            value: { x: -1.39, y: 0.17, z: 0 },
+            step: 0.01
+        },
+        charmScale: {
+            value: 0.05,
+            step: 0.01
+        },
+        charmRotation:
+        {
+            value: { x: 0, y: 0.0, z: 0 },
+            step: 0.1
+        }
+    })
     return (<>
         <OrbitControls />
-        <directionalLight />
-        <pointLight 
+        <directionalLight 
+            castShadow
+            intensity={ 15 }
+        />
+        {/* <pointLight 
             position={[ 0.0, -0.5, -1.0 ]}
             intensity={ 5.0 }
-        />
+            castShadow
+        /> */}
         <ambientLight intensity={ 0.4 } />
-        <group ref={ bracelet } {...props} dispose={null} scale={ 1.125 } rotation={[ -.125, 0, 0.125 ]} position={[ 0, 0, 0 ]}>
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Bracelet.geometry}
-                material={nodes.Bracelet.material}
-            >  
-                <meshStandardMaterial 
-                    color={ materialColor } 
-                    metalness={ 1 }
-                    roughness={ 0.2 }
-                />
-
+        <Physics  debug>
+            {/* <group castShadow ref={ bracelet } {...props} dispose={null} scale={ 1.125 } rotation={[ -.125, 0, 0.125 ]} position={[ 0, 0, 0.5 ]}>
                 <mesh
                     castShadow
-                    receiveShadow
+                    geometry={nodes.Bracelet.geometry}
+                    material={nodes.Bracelet.material}
+                >  
+                    <meshStandardMaterial 
+                        color={ materialColor } 
+                        metalness={ 1 }
+                        roughness={ 0.2 }
+                    />
+
+                </mesh>
+                <mesh
+                    castShadow
                     geometry={nodes.T_Clasp.geometry}
                     material={nodes.T_Clasp.material}
                     position={[-0.144, 0.029, 0.032]}
@@ -166,12 +220,79 @@ export default function FriendshipBracelet(props) {
                         roughness={ 0.2 }
                     />
                 </mesh>
+            </group> */}
+            <RigidBody 
+                ref={ bracelet }
+                colliders="trimesh" 
+                friction={ 0 }
+                type="kinematicPosition" 
+            >
+            <mesh 
+                castShadow
+                scale={ braceletScale } 
+                // rotation={[ Math.PI / 2 - .125, 0, 0.125 ]} 
+                rotation={[ braceletRotation.x, braceletRotation.y, braceletRotation.z ]}
+                position={[ braceletPosition.x, braceletPosition.y, braceletPosition.z ]}
+            >
+                <torusGeometry args={[ 
+                    // Radius
+                    10, 
+                    // Tube
+                    0.75, 
+                    // Radial Segments
+                    16, 
+                    // Tubular Segments
+                    16, 
+                    // Arc
+                    Math.PI * 2 
+                ]} 
+                />
+                <meshStandardMaterial 
+                    color={ materialColor } 
+                    metalness={ 1.0 } 
+                    roughness={ 0.2 } 
+                />
             </mesh>
-        </group>
-        {/* <mesh onClick={ shareCanvas } rotateX={ Math.PI * .5 } scale={[ 0.5, 0.5, 0.5, ]} position={[ 0, -0.5, 0 ]} ref={ sharePanel }>
-            <boxGeometry scale={[ 1, 1, 1 ]} />
-            <meshStandardMaterial color="blue" side={ THREE.DoubleSide } />
-        </mesh> */}
+            </RigidBody>
+            <RigidBody 
+                colliders="trimesh" 
+                ref={ charm }
+            >     
+            <mesh 
+                castShadow
+                scale={ charmScale } 
+                // rotation={[ Math.PI / 2 - .125, 0, 0.125 ]} 
+                rotation={[ charmRotation.x, charmRotation.y, charmRotation.z ]}
+                position={[ charmPosition.x, charmPosition.y, charmPosition.z ]}
+            >
+                <torusGeometry args={[ 
+                    // Radius
+                    10, 
+                    // Tube
+                    0.5, 
+                    // Radial Segments
+                    16, 
+                    // Tubular Segments
+                    16, 
+                    // Arc
+                    Math.PI * 2 
+                ]} 
+                />
+                <meshStandardMaterial 
+                    color={ materialColor } 
+                    metalness={ 1.0 } 
+                    roughness={ 0.2 } 
+                />
+            </mesh>
+            </RigidBody>
+
+        <RigidBody type="fixed">
+        <mesh receiveShadow rotation-x={ - Math.PI / 2 } scale={ 10 } position={[ 0, -1, 0 ]}>
+            <planeGeometry />
+            <meshStandardMaterial color="#000000" />
+        </mesh>
+        </RigidBody>
+        </Physics>
     </>)
 }
 

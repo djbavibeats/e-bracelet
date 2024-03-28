@@ -6,6 +6,7 @@ import { faClipboardListCheck, faCamera } from "@fortawesome/pro-regular-svg-ico
 
 import FriendshipBracelet from './Experience'
 import TaskList from './TaskList.jsx'
+import PhysicsExperiement from './PhysicsExperiment.jsx'
 
 function Loader() {
     const { progress } = useProgress()
@@ -45,6 +46,7 @@ export default function Bracelet({ user, handlePopulateUser, handleUpdateUser, a
         {/* <div className="h-3/6"></div> */}
         <div className="aspect-square w-full relative">
             <Canvas
+                shadows
                 ref={ canvas }
                 // frameloop="demand"
                 id="canvas-wrapper-id"
@@ -58,12 +60,13 @@ export default function Bracelet({ user, handlePopulateUser, handleUpdateUser, a
                 } }
             >
                 <Suspense fallback={<Loader />}>
-                    <FriendshipBracelet 
+                    {/* <FriendshipBracelet 
                         user={ user } 
                         childFunc={ childFunc } 
                         missionsCompleted={ missionsCompleted } 
                         missionsModalVisible={ missionsModalVisible }
-                    />
+                    /> */}
+                    <PhysicsExperiement />
                 </Suspense>
                 <Environment 
                     preset="city"
