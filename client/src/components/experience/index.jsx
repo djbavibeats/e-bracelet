@@ -66,7 +66,9 @@ export default function Bracelet({ user, handlePopulateUser, handleUpdateUser, a
                         missionsCompleted={ missionsCompleted } 
                         missionsModalVisible={ missionsModalVisible }
                     /> */}
-                    <PhysicsExperiement />
+                    <PhysicsExperiement 
+                        missions={ missions }
+                    />
                 </Suspense>
                 <Environment 
                     preset="city"

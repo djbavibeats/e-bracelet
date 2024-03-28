@@ -138,3 +138,12 @@ input[type="radio"]:checked + label {
     border: 2px solid black;
     opacity: 0;
 }
+
+.htmlScreen {
+    background: rgba(0,0,0,0.25);
+    /* height: 100px; */
+    /* width: 100px; */
+    /* height: 40%; */
+    /* width: 100%; */
+    border: 2px solid yellow;
+}
