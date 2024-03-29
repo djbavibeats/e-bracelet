@@ -38,11 +38,11 @@ function Controls({ zoom, focusPoint, pos = new THREE.Vector3(), look = new THRE
 
 
 
-const Charm = ({ position, rotation, zoomToView, zoom, focusPoint, focusObject, mission, setActiveMission, hover, setHover, available }) => {
-    console.log(mission)
+const Charm = ({ user, position, rotation, zoomToView, zoom, focusPoint, focusObject, mission, setActiveMission, hover, setHover, available }) => {
     const charm = useRef()
     const [ charmHover, setCharmHover ] = useState(false)
     const [ random, setRandom ] = useState(Math.random() * 0.5)
+    const [ opacity, setOpacity ] = useState(available ? 0.5 : 0.25) 
     let speed = 3
     let distance = 0.035
     // let random = Math.random() * 0.5
@@ -53,7 +53,20 @@ const Charm = ({ position, rotation, zoomToView, zoom, focusPoint, focusObject, 
         : '#aa9999'
     let metalness   = 1.0
     let roughness   = 0.2
-    let opacity     = available ? 0.85 : 0.35
+    
+
+    useEffect(() => {
+        user.missions.filter((item) => {
+            if (item.missionId === mission._id) {
+                console.log(item)
+                if (item.completed === true) {
+                    console.log('it has been done!')
+                    setOpacity(1.0)
+                    color = '#00ff00'
+                }
+            }
+        })
+    }, [ user ])
 
     let pos = new THREE.Vector3()
     useFrame((state) => {
@@ -74,15 +87,18 @@ const Charm = ({ position, rotation, zoomToView, zoom, focusPoint, focusObject, 
     })
 
     useEffect(() => {
+    }, [ user ])
+
+    useEffect(() => {
         document.body.style.cursor = charmHover ? 'pointer' : 'auto' 
     }, [ charmHover ])
 
     useEffect(() => {
         if (zoom) {
             if (focusObject === charm.current) {
-                charm.current.children[0].material.opacity = 0.95
-                charm.current.children[1].material.opacity = 0.95
-                charm.current.children[2].material.opacity = 0.95
+                charm.current.children[0].material.opacity = opacity
+                charm.current.children[1].material.opacity = opacity
+                charm.current.children[2].material.opacity = opacity
             }
         } else {
             charm.current.children[0].material.opacity = opacity
@@ -118,7 +134,7 @@ const Charm = ({ position, rotation, zoomToView, zoom, focusPoint, focusObject, 
     </>)
 }
 
-export default function PhysicsExperiement({ missions, charmFocused, setCharmFocused, setActiveMission }) {
+export default function PhysicsExperiement({ user, missions, charmFocused, setCharmFocused, setActiveMission }) {
     const { nodes, materials } = useGLTF("./models/temp-bracelet.gltf")
     const [ zoom, setZoom ] = useState(false)
     const [ hover, setHover ] = useState(false)
@@ -141,10 +157,12 @@ export default function PhysicsExperiement({ missions, charmFocused, setCharmFoc
     })
 
     useEffect(() => {
+    }, [ user ])
+
+    useEffect(() => {
     }, [ focus ])
 
     useEffect(() => {
-        console.log('switching charm focus')
         if (!charmFocused) {
             setZoom(false)
         }
@@ -172,7 +190,8 @@ export default function PhysicsExperiement({ missions, charmFocused, setCharmFoc
         Promise.all(missions.map((mission, i) => {
             random = Math.random() / 40
             if (mission.available) {
-                charms.push(<Charm 
+                charms.push(<Charm
+                    user={ user } 
                     key={ i }
                     zoom={ zoom }
                     hover={ hover }
@@ -192,6 +211,7 @@ export default function PhysicsExperiement({ missions, charmFocused, setCharmFoc
                 />)
             } else {
                 charms.push(<Charm 
+                    user={ user }
                     key={ i }
                     zoom={ zoom }
                     hover={ hover }
@@ -276,11 +296,9 @@ export default function PhysicsExperiement({ missions, charmFocused, setCharmFoc
                 <mesh scale={[ 3, 0.75, 3 ]} position={[ 0, 0, 0 ]}
                     visible={ false }
                     onPointerEnter={() => {
-                        console.log('pointer enter')
                         setHover(true)
                     }}
                     onPointerLeave={() => {
-                        console.log('pointer leave')
                         setHover(false)
                     }}
                 >
