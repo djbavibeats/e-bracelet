@@ -4,6 +4,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import spotify from './spotify.js'
 import database from './database.js'
+import ar from './ar.js'
 
 dotenv.config()
 
@@ -23,6 +24,7 @@ app.get('/api', (req, res) => {
 
 app.use('/spotify', spotify)
 app.use('/database', database)
+app.use('/ar', ar)
 
 app.listen(PORT, () => {
     console.log(`server is up at port ${PORT}`)
