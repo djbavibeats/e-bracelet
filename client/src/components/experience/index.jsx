@@ -82,14 +82,48 @@ function followMission(user, mission, handleUpdateUser) {
         }
 }
 
-const FindModal = ({ user, toggleFindModal }) => {
+const FindModal = ({ user, missions, toggleFindModal, handleUpdateUser }) => {
     const [ arActive, setArActive ] = useState(false)
     const [ arPopup, setArPopup ] = useState(false)
     const [ arConnected, setArConnected ] = useState(false)
+
+    const completeMission = () => {
+        const userId = user._id
+        const mission = missions.find(mission => mission.name === 'find')
+        const missionId = mission._id
+
+        fetch(`${url}database/missions/update-mission-finishers`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                missionId: missionId,
+                userId: userId,
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message)
+                fetch(`${url}database/users/get-by-id?user_id=${localStorage.getItem('ca_dbv_id')}`)
+                    .then(resp => resp.json())
+                    .then(data => {
+                        handleUpdateUser(data.user)
+                        setArConnected(false)
+                        toggleFindModal()
+                        return {
+                            status: 200,
+                            message: "success",
+                            user: data.user,
+                            mission: mission
+                        }
+                    })
+            })
+    }
     const openARExperience = () => {
         var url_safe_username = encodeURIComponent(user._id)
-        var url = "https://djbavibeats-default-justinbavier.dev.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
-        // var url = "https://justinbavier.staging.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
+        // var url = "https://djbavibeats-default-justinbavier.dev.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
+        var url = "https://justinbavier.staging.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
         let popup = window.open(url)
         setArPopup(popup)
     }
@@ -110,8 +144,14 @@ const FindModal = ({ user, toggleFindModal }) => {
                 if (event.data === "ar-connected") {
                     console.log('ar connected')
                     setArConnected(true)
-                } else if (event.data === "ar-disconnected") {
+                } else if (event.data === "ar-mission-quit") {
+                    alert("Mission quit!")
                     setArConnected(false)
+                    toggleFindModal()
+                } else if (event.data === "ar-mission-success") {
+                    alert("Mission success!")
+                    completeMission()
+                    console.log('message received?')
                 }
             }
         })
@@ -135,7 +175,9 @@ const FindModal = ({ user, toggleFindModal }) => {
                     you will be redirected in a different window.
                 </p>
                 <div className="flex flex-row gap-x-2">
-                    <div className="text-center w-24 border-2 border-white py-1 px-1 rounded-full bg-[rgba(0,0,0,0.075)] hover:cursor-pointer" onClick={ openARExperience }>
+                    <div className="text-center w-24 border-2 border-white py-1 px-1 rounded-full bg-[rgba(0,0,0,0.075)] hover:cursor-pointer" 
+                        onClick={ openARExperience }
+                    >
                         <p className="font-eurostile text-[9px] text-center">CONTINUE</p>
                     </div>
                     <div className="text-center w-24 border-2 border-white py-1 px-1 rounded-full bg-[rgba(0,0,0,0.075)] hover:cursor-pointer" onClick={ toggleFindModal }>
@@ -223,11 +265,13 @@ export default function Bracelet({ user, handlePopulateUser, handleUpdateUser, a
         user.missions.filter((item) => {
             if (item.missionId === mission._id) {
                 if (item.completed === true) {
+                    console.log(item)
                     el =  <div className="bg-black absolute flex flex-col items-center justify-center top-0 left-0 m-auto z-[90] h-full w-full">
                         {/* <FontAwesomeIcon className="text-2xl mb-3" icon={ faLock }  /> */}
-                        <p className="font-eurostile text-xs mb-6">MISSION COMPLETE</p>
+                        <p className="font-eurostile uppercase mb-2">{ item.missionName }</p>
+                        <p className="font-eurostile text-xs mb-4">MISSION COMPLETE</p>
                         <div onClick={ () => cancelFocus() } className="z-50 w-1/2 border-2 border-white py-1 px-1 rounded bg-[rgba(0,0,0,0.075)] hover:cursor-pointer">
-                            <p className="font-eurostile text-[9px] text-center">CANCEL</p>
+                            <p className="font-eurostile text-[9px] text-center">CLOSE</p>
                         </div>
                     </div>
                 }
@@ -328,7 +372,7 @@ export default function Bracelet({ user, handlePopulateUser, handleUpdateUser, a
         }
         {
             findModalVisible &&
-            <FindModal user={ user } toggleFindModal={ toggleFindModal } />
+            <FindModal user={ user } missions={ missions } toggleFindModal={ toggleFindModal } handleUpdateUser={ handleUpdateUser } />
         }
     </>)
 }
