@@ -85,22 +85,41 @@ function followMission(user, mission, handleUpdateUser) {
 const FindModal = ({ user, toggleFindModal }) => {
     const [ arActive, setArActive ] = useState(false)
     const [ arPopup, setArPopup ] = useState(false)
+    const [ arConnected, setArConnected ] = useState(false)
     const openARExperience = () => {
         var url_safe_username = encodeURIComponent(user._id)
-        var url = "https://justinbavier.staging.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
+        var url = "https://djbavibeats-default-justinbavier.dev.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
+        // var url = "https://justinbavier.staging.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
         let popup = window.open(url)
         setArPopup(popup)
     }
 
-    const postMessage = () => {
+    useEffect(() => {
+        console.log("AR Popup Change", arPopup)
         if (arPopup) {
-            arPopup.postMessage("create bridge between bracelet and ar experience", "*")
+            setTimeout(() => {
+                arPopup.postMessage("connecting-from-bracelet", "*")  
+            }, 5000)
         }
-    }
+
+    }, [ arPopup ])
+
+    useEffect(() => {
+        window.addEventListener("message", (event) => {
+            if (event.origin !== window.location.href.replace(/\/+$/, '')) {
+                if (event.data === "ar-connected") {
+                    console.log('ar connected')
+                    setArConnected(true)
+                } else if (event.data === "ar-disconnected") {
+                    setArConnected(false)
+                }
+            }
+        })
+    }, [ arPopup ])
 
     return (<>
         {
-            arActive &&
+            arConnected &&
                 <div className="absolute z-[99999] top-0 bottom-0 left-0 right-0 flex items-center justify-center bg-black">
                     <p>AR experience is open in a new tab!</p>
                 </div>
@@ -121,11 +140,6 @@ const FindModal = ({ user, toggleFindModal }) => {
                     </div>
                     <div className="text-center w-24 border-2 border-white py-1 px-1 rounded-full bg-[rgba(0,0,0,0.075)] hover:cursor-pointer" onClick={ toggleFindModal }>
                         <p className="font-eurostile text-[9px] text-center">GO BACK</p>
-                    </div>
-                </div>
-                <div className="flex flex-row gap-x-2">
-                    <div className="text-center w-40 border-2 border-white py-1 px-1 rounded-full bg-[rgba(0,0,0,0.075)] hover:cursor-pointer" onClick={ postMessage }>
-                        <p className="font-eurostile text-[9px] text-center">CONNECT TO AR</p>
                     </div>
                 </div>
             </div>
@@ -156,15 +170,15 @@ export default function Bracelet({ user, handlePopulateUser, handleUpdateUser, a
 
     const childFunc = useRef(null)
 
-    useEffect(() => {
-        console.log(window.location.href.replace(/\/+$/, ''))
-        window.addEventListener("message", (event) => {
-            if (event.origin !== window.location.href.replace(/\/+$/, '')) {
-                console.log(event.data)
-                alert(event.data)
-            }
-        })
-    }, [])
+    // useEffect(() => {
+    //     console.log(window.location.href.replace(/\/+$/, ''))
+    //     window.addEventListener("message", (event) => {
+    //         if (event.origin !== window.location.href.replace(/\/+$/, '')) {
+    //             console.log(event.data)
+    //             alert(event.data)
+    //         }
+    //     })
+    // }, [])
     
     // Find modal state
     const [ findModalVisible, setFindModalVisible ] = useState(false)
