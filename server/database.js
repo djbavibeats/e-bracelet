@@ -241,21 +241,20 @@ router.post('/users/get-email-user', async (req, res) => {
  */
 router.get('/users/get-by-id', async (req, res) => {
     const userId = req.query.user_id || null
-    const checkUser = await User.findOne({
+    User.findOne({
         _id: userId
-    })
-
-    if (checkUser) {
+    }).then((result) => {
         res.send({
             status: 200,
-            user: checkUser
+            user: result
         })
-    } else {
+    })
+    .catch((err) => {
         res.send({
             status: 400,
             message: 'Error retrieving user'
         })
-    }
+    })
 })
 
 // END GENERAL USER ROUTES

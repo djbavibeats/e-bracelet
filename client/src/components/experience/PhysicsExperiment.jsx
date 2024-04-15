@@ -1,7 +1,7 @@
-import { OrbitControls, useGLTF, Html, Hud, Billboard, Text } from "@react-three/drei"
+import { OrbitControls, useGLTF, Html, Hud, Billboard, Text, shaderMaterial } from "@react-three/drei"
 import { Perf } from 'r3f-perf'
 import { useRef, useState, useMemo } from "react"
-import { useFrame, useThree } from "@react-three/fiber"
+import { useFrame, useThree, extend } from "@react-three/fiber"
 import * as THREE from 'three'
 import CameraControls from 'camera-controls'
 import { useEffect } from "react"
@@ -36,21 +36,40 @@ function Controls({ zoom, focusPoint, pos = new THREE.Vector3(), look = new THRE
     })
 }
 
+import vertexShader from '../../assets/shaders/holo/vertex.glsl'
+import fragmentShader from '../../assets/shaders/holo/fragment.glsl'
 
+const CharmShader = new shaderMaterial(
+    {
+        uTime: 0.0,
+        uColor: new THREE.Color('red')
+    },
+    vertexShader,
+    fragmentShader
+)
+extend({ CharmShader })
 
 const Charm = ({ user, position, rotation, zoomToView, zoom, focusPoint, focusObject, mission, setActiveMission, hover, setHover, available }) => {
     const charm = useRef()
+    const topOrb = useRef()
+    const middleOrb = useRef()
+    const bottomOrb = useRef()
     const [ charmHover, setCharmHover ] = useState(false)
     const [ random, setRandom ] = useState(Math.random() * 0.5)
     const [ opacity, setOpacity ] = useState(available ? 0.5 : 0.25) 
+    const [ completed, setCompleted ] = useState(false)
     let speed = 3
     let distance = 0.035
     // let random = Math.random() * 0.5
     // let color = "#42b4f8"
-    let color       = available ? 
-        // "#d0cece" 
+    // let color       = available ? 
+    //     // "#d0cece" 
+    //     "#AACECE"
+    //     : '#aa9999'
+    let color       = available ?
         "#AACECE"
-        : '#aa9999'
+        // : "#771155"
+        : "#e97f7f"
     let metalness   = 1.0
     let roughness   = 0.2
     
@@ -61,6 +80,7 @@ const Charm = ({ user, position, rotation, zoomToView, zoom, focusPoint, focusOb
                 console.log(item)
                 if (item.completed === true) {
                     console.log('it has been done!')
+                    setCompleted(true)
                     setOpacity(1.0)
                     color = '#00ff00'
                 }
@@ -84,6 +104,30 @@ const Charm = ({ user, position, rotation, zoomToView, zoom, focusPoint, focusOb
         } else {
             charm.current.position.y = Math.sin(time * (speed + random)) * distance + (position[1] * 0.25)
         }
+        topOrb.current.material.uTime = time
+        bottomOrb.current.material.uTime = time
+        middleOrb.current.material.uTime = time
+        
+    })
+
+    useEffect(() => {
+        topOrb.current.material.transparent = true
+        topOrb.current.material.opacity = opacity
+        topOrb.current.material.metalness = metalness
+        topOrb.current.material.roughness = roughness
+        topOrb.current.material.uColor = new THREE.Color(color)
+
+        bottomOrb.current.material.transparent = true
+        bottomOrb.current.material.opacity = opacity
+        bottomOrb.current.material.metalness = metalness
+        bottomOrb.current.material.roughness = roughness
+        bottomOrb.current.material.uColor = new THREE.Color(color)
+
+        middleOrb.current.material.transparent = true
+        middleOrb.current.material.opacity = opacity
+        middleOrb.current.material.metalness = metalness
+        middleOrb.current.material.roughness = roughness
+        middleOrb.current.material.uColor = new THREE.Color(color)
     })
 
     useEffect(() => {
@@ -118,17 +162,26 @@ const Charm = ({ user, position, rotation, zoomToView, zoom, focusPoint, focusOb
         ref={ charm }
         position={[ position[0], position[1], position[2] ]}
     >
-        <mesh position-y={ 0.175 } rotation={[ ...rotation ]} scale={ 0.04 }>
+        <mesh ref={ topOrb } position-y={ 0.175 } rotation={[ ...rotation ]} scale={ 0.04 }>
             <sphereGeometry />
-            <meshStandardMaterial transparent={ true } opacity={ opacity } color={ color } metalness={ metalness } roughness={ roughness } />
+            { completed ?
+                <meshStandardMaterial opacity={ opacity } color={ color } metalness={ metalness } transparent={ true } roughness={ roughness } />
+                : <charmShader />
+            }
         </mesh>
-        <mesh position-y={ 0.25 } rotatation={[ ...rotation ]} scale={ 0.02 }>
+        <mesh ref={ middleOrb } position-y={ 0.25 } rotatation={[ ...rotation ]} scale={ 0.02 }>
             <sphereGeometry />
-            <meshStandardMaterial transparent={ true } opacity={ opacity } color={ color } metalness={ metalness } roughness={ roughness }  />
+            { completed ?
+                <meshStandardMaterial opacity={ opacity } color={ color } metalness={ metalness } transparent={ true } roughness={ roughness } />
+                : <charmShader />
+            }
         </mesh>
-        <mesh position-y={ 0 } rotation={[ ...rotation ]} scale={ 0.125 }>
+        <mesh ref={ bottomOrb } position-y={ 0 } rotation={[ ...rotation ]} scale={ 0.125 }>
             <sphereGeometry />
-            <meshStandardMaterial transparent={ true } opacity={ opacity } color={ color } metalness={ metalness } roughness={ roughness } />
+            { completed ?
+                <meshStandardMaterial opacity={ opacity } color={ color } metalness={ metalness } transparent={ true } roughness={ roughness } />
+                : <charmShader />
+            }
         </mesh>
     </group>
     </>)
@@ -231,22 +284,6 @@ export default function PhysicsExperiement({ user, missions, charmFocused, setCh
                 />)
             }
         }))
-        // for (let i = 0; i < 5; i++) {
-        //     random = Math.random() / 40
-        //     charms.push(<Charm 
-        //         key={ i }
-        //         zoom={ zoom }
-        //         focusPoint={ focusPoint }
-        //         focusObject={ focusObject }
-        //         position={[ 
-        //             Math.sin(i * 10) * radius - 0.25, 
-        //             - 1.75 + random, 
-        //             Math.cos(i * 10) * radius 
-        //         ]}
-        //         rotation={[ 0, 0, 0 ]}
-        //         zoomToView={ zoomToView }
-        //     />)
-        // }
 
         return (<group scale={ 1.00 } >{
             charms.map(el => {
@@ -255,34 +292,6 @@ export default function PhysicsExperiement({ user, missions, charmFocused, setCh
         }</group>)
     }
     
-    // const renderRings = () => {
-    //     let elements = []
-    //     let radius = 1.125
-    //     for (let i = 0; i < 44; i++) {
-    //         elements.push(<Ring 
-    //             key={ i }
-    //             position={[
-    //                 Math.sin(i / 7) * radius,
-    //                 0,
-    //                 Math.cos(i / 7) * radius
-    //             ]}
-    //             rotation={[ 
-    //                 // Math.PI / 2, 
-    //                 i % 2 === 0 ? Math.PI / 2 : 0,
-    //                 // 0, 
-    //                 i % 2 === 0 ? 0 : Math.PI + (i / 7),
-    //                 0
-    //             ]} 
-    //         />)
-    //     }
-
-    //     return (<group scale={ 1.75 } >{
-    //         elements.map(el => {
-    //             return el
-    //         })
-    //     }</group>)
-    // }
-
     return (<>
         <OrbitControls makeDefault />
         <Perf />

@@ -10,6 +10,7 @@ import PhysicsExperiement from './PhysicsExperiment.jsx'
 
 // SERVER URL
 const url = import.meta.env.VITE_SERVER_URL
+const ar_url = import.meta.env.VITE_AR_URL
 
 function followMission(user, mission, handleUpdateUser) {
     console.log('follow', user, mission)
@@ -123,7 +124,7 @@ const FindModal = ({ user, missions, toggleFindModal, handleUpdateUser }) => {
     const openARExperience = () => {
         var url_safe_username = encodeURIComponent(user._id)
         // var url = "https://djbavibeats-default-justinbavier.dev.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
-        var url = "https://justinbavier.staging.8thwall.app/chase-atlantic-e-bracelet-ar?uid=" + url_safe_username
+        var url = ar_url + "?uid=" + url_safe_username
         let popup = window.open(url)
         setArPopup(popup)
     }
@@ -277,7 +278,7 @@ export default function Bracelet({ user, handlePopulateUser, handleUpdateUser, a
                 }
             }
         })
-        return <p>{ el }</p>
+        return <div>{ el }</div>
     }
 
     return (<>
